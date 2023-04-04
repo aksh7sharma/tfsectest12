@@ -8,13 +8,13 @@ provider "aws" {
 
 }
 
-module "s3" {
+# module "s3" {
 
-    source = "<path-to-S3-folder>"
+#     source = "<path-to-S3-folder>"
 
-    bucket_name = "your_bucket_name"       
+#     bucket_name = "your_bucket_name"       
 
-}
+# }
 
 resource "aws_s3_bucket" "temps314" {
 

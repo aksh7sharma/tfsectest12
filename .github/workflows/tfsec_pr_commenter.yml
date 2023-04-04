@@ -7,8 +7,8 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions: 
-      contents: read-all
-      pull-requests: write-all
+      contents: read
+      pull-requests: write
 
     steps:
       - name: Clone repo

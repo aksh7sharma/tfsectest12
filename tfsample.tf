@@ -24,39 +24,7 @@ resource "aws_s3_bucket" "temps314" {
 
 }
 
-resource "aws_s3_bucket" "temp56565" {
-
-    bucket = "${secrets.bucket_name}" 
-
-    acl = "${secrets.acl_value}"   
-
-}
-    
-resource "aws_s3_bucket" "tem8764" {
-
-    bucket = "${secrets.bucket_name}" 
-
-    acl = "${secrets.acl_value}"   
-
-}
-    
-resource "aws_s3_bucket" "t2323em8764" {
-
-    bucket = "${secrets.bucket_name}" 
-
-    acl = "${secrets.acl_value}"   
-
-}
-    
-resource "aws_s3_bucket" "t231228764" {
-
-    bucket = "${secrets.bucket_name}" 
-
-    acl = "${secrets.acl_value}"   
-
-}
-    
-resource "aws_s3_bucket" "eded1233" {
+resource "aws_s3_bucket" "12aeded1233" {
 
     bucket = "${secrets.bucket_name}" 
 

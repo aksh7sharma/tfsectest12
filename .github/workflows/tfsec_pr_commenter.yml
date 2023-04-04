@@ -4,7 +4,7 @@ on:
 jobs:
   tfsec:
     name: tfsec PR commenter
-    runs-on: aws-test
+    runs-on: ubuntu-latest
 
     permissions:
       contents: read

@@ -32,4 +32,11 @@ resource "aws_s3_bucket" "temp56565" {
 
 }
     
+resource "aws_s3_bucket" "tem8764" {
+
+    bucket = "${secrets.bucket_name}" 
+
+    acl = "${secrets.acl_value}"   
+
+}
     

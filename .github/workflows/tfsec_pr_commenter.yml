@@ -6,7 +6,9 @@ jobs:
     name: tfsec PR commenter
     runs-on: ubuntu-latest
 
-    permissions: read-all|write-all
+    permissions: 
+      contents: read-all
+      pull-requests: write-all
 
     steps:
       - name: Clone repo

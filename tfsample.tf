@@ -16,7 +16,7 @@ module "s3" {
 
 }
 
-resource "aws_s3_bucket" "454edggj" {
+resource "aws_s3_bucket" "egtehdshs" {
 
     bucket = "${secrets.bucket_name}" 
 

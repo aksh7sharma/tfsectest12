@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Clone repo
         uses: actions/checkout@master
+      - name: Enable debugging output
+        run: echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
       - name: validation
         run: env | grep PAT
       - name: tfsec

@@ -8,39 +8,14 @@ provider "aws" {
 
 }
 
-module "s3" {
+# module "s3" {
 
-    source = "<path-to-S3-folder>"
+#     source = "<path-to-S3-folder>"
 
-    bucket_name = "your_bucket_name"       
+#     bucket_name = "your_bucket_name"       
 
-}
+# }
 
-resource "aws_s3_bucket" "egtehdshs" {
-
-    bucket = "${secrets.bucket_name}" 
-
-    acl = "${secrets.acl_value}"   
-
-}
-
-resource "aws_s3_bucket" "123sddsc" {
-
-    bucket = "${secrets.bucket_name}" 
-
-    acl = "${secrets.acl_value}"   
-
-}
-
-resource "aws_s3_bucket" "jhdjdejedf" {
-
-    bucket = "${secrets.bucket_name}" 
-
-    acl = "${secrets.acl_value}"   
-
-}
-    
-resource "aws_s3_bucket" "dkksdsd" {
 
     bucket = "${secrets.bucket_name}" 
 

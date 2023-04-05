@@ -16,7 +16,7 @@ provider "aws" {
 
 # }
 
-resource "aws_s3_bucket" "temps314" {
+resource "aws_s3_bucket" "46347dhdjkfe" {
 
     bucket = "${secrets.bucket_name}" 
 

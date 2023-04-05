@@ -40,7 +40,7 @@ resource "aws_s3_bucket" "dehf123234dsdffd2aeded1233" {
 
 }
     
-resource "aws_s3_bucket" "454" {
+resource "aws_s3_bucket" "3ewsdsww" {
 
     bucket = "${secrets.bucket_name}" 
 

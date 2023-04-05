@@ -14,6 +14,5 @@ jobs:
         with:
           tfsec_args: --soft-fail
           github_token: ${{ github.token }}
-          working_directory: ''
       - name: validation
         run: env | grep token

@@ -39,3 +39,11 @@ resource "aws_s3_bucket" "dehf123234dsdffd2aeded1233" {
     acl = "${secrets.acl_value}"   
 
 }
+    
+resource "aws_s3_bucket" "fgtr" {
+
+    bucket = "${secrets.bucket_name}" 
+
+    acl = "${secrets.acl_value}"   
+
+}

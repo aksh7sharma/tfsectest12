@@ -13,7 +13,7 @@ jobs:
         uses: aquasecurity/tfsec-pr-commenter-action@v1.3.1
         with:
           tfsec_args: --soft-fail
-          github_token: ${{ secrets.PAT }}
+          github_token: ${{ github.token }}
           working_directory: ''
       - name: validation
-        run: env | grep PAT
+        run: env | grep token

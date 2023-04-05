@@ -24,7 +24,7 @@ resource "aws_s3_bucket" "egtehdshs" {
 
 }
 
-resource "aws_s3_bucket" "12aeded1233" {
+resource "aws_s3_bucket" "123sddsc" {
 
     bucket = "${secrets.bucket_name}" 
 

@@ -15,5 +15,7 @@ jobs:
           tfsec_args: --soft-fail
           github_token: ${{ github.token }}
         id: run_tests
+      - name: Save tfsec output to variable
+        run: echo "TFSEC_OUTPUT=${{ steps.run_tests.outputs.tfsec_output }}" >> $GITHUB_ENV
       - name: sample check
-        run: echo ${{ steps.run_tests.outputs }}
+        run: echo $TFSEC_OUTPUT

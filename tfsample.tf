@@ -30,3 +30,10 @@ resource "aws_s3_bucket" "newbuckethwte46347dhdjkfe" {
     acl = "${secrets.acl_value}"   
 
 }
+resource "aws_s3_bucket" "newbucke12wssthwte46347dhdjkfe" {
+
+    bucket = "${secrets.bucket_name}"
+
+    acl = "${secrets.acl_value}"
+
+}

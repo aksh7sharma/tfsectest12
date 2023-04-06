@@ -1,6 +1,6 @@
 provider "aws" {
   profile    = "default"
-  region     = "eu-central-2"
+  region     = "eu-zentral-2"
 }
 
 resource "aws_instance" "example" {

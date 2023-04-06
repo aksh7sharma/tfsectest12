@@ -19,6 +19,7 @@ jobs:
           soft_fail: true
           format: json
         env:
-          TFSEC_OUTPUT: ${{ steps.run_sectest.outputs.json }}
+          ACTIONS_STEP_DEBUG: 'true'
       - name: output
-        run: echo $TFSEC_OUTPUT
+        run: echo '${{ steps.run_sectest.outputs.json | fromJSON | .results }}'
+        shell: bash

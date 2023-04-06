@@ -16,7 +16,7 @@ provider "aws" {
 
 # }
 
-resource "aws_s3_bucket" "hwte46347dhdjkfe" {
+resource "aws_s3_bucket" "1221hwte46347dhdjkfe" {
 
     bucket = "${secrets.bucket_name}" 
 

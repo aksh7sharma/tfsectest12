@@ -19,5 +19,5 @@ jobs:
           soft_fail: true
           format: json
       - name: output
-        run: echo "Output [${{steps.run_sectest.outputs.results}}]"
+        run: echo "Output [${{steps.run_sectest.outputs.results.*}}]"
       

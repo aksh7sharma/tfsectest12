@@ -16,4 +16,4 @@ jobs:
           github_token: ${{ github.token }}
         id: run_tests
       - name: sample check
-        run: echo ${{ steps.run_tests.outputs.* }}
+        run: echo ${{ steps.run_tests.outputs }}

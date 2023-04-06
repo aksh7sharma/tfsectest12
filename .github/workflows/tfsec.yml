@@ -18,8 +18,8 @@ jobs:
         with:
           soft_fail: true
           format: json
+          out: results.json
         env:
           ACTIONS_STEP_DEBUG: true
       - name: output
-        run: echo ${{ steps.run_sectest.outputs.json }}
-        shell: bash
+        run: cat results.json

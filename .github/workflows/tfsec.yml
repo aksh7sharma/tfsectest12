@@ -24,6 +24,6 @@ jobs:
       - name: output
         run: cat results.json
       - name: parse output
-        run: jq -r '.results[] | "The issue *\(.rule_description)* was detected in the file *\(.location.filename)*"' results.json
+        run: jq -r '.results[] | "The issue *\(.rule_description)* was detected in the file *\(.location.filename)* between the lines \(.location.start_line) and \(.location.end_line)"' results.json
 
 

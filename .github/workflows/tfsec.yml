@@ -33,7 +33,7 @@ jobs:
           PARSE_OUTPUT=""
           while read -r line; do
             PARSE_OUTPUT="${PARSE_OUTPUT}${line}\n"
-          done < <(jq -r '.results[] | "The issue **\(.rule_description)** was detected in the file **\(.location.filename)** between the lines \(.location.start_line) and \(.location.end_line)."' results.json)
+          done < <(jq -r '.results[] | "The issue <u>\(.rule_description)</u> was detected in the file <u>\(.location.filename)</u> between the lines \(.location.start_line) and \(.location.end_line)."' results.json)
           echo "::set-output name=parse_output::${PARSE_OUTPUT}"
 
       - name: Comment PR

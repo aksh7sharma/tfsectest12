@@ -14,7 +14,7 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@master
 
-      - name: Run tfsec
+      - name: tfsec
         id: run_sectest
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
@@ -24,36 +24,24 @@ jobs:
         env:
           ACTIONS_STEP_DEBUG: true
 
-      - name: Parse output
-        id: parse_output
-        run: jq -r '.results[] | "The issue *\(.rule_description)* was detected in the file *\(.location.filename)* between the lines \(.location.start_line) and \(.location.end_line)"' results.json
+      - name: output
+        run: cat results.json
 
-      - name: Comment PR with tfsec results
+      - name: parse output
+        id: parse_output
+        run: |
+          echo ::set-output name=parse_output::$(jq -r '.results[] | "The issue *\(.rule_description)* was detected in the file *\(.location.filename)* between the lines \(.location.start_line) and \(.location.end_line)"' results.json)
+
+      - name: Comment PR
         uses: actions/github-script@v4
+        if: always()
         with:
-          github-token: ${{ github.token }}
           script: |
-            const output = `TFSec results:\n\n${steps.parse_output.outputs.parsed_output}`;
-            const context = github.context;
-            const octokit = new github.getOctokit('${{ github.token }}');
-            const { data: comments } = await octokit.issues.listComments({
+            const parse_output = '${{ steps.parse_output.outputs.parse_output }}'
+            github.issues.createComment({
+              issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number
-            });
-            const comment = comments.find(comment => comment.user.login === 'github-actions[bot]' && comment.body.startsWith('TFSec results:'));
-            if (comment) {
-              await octokit.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: comment.id,
-                body: output
-              });
-            } else {
-              await octokit.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body: output
-              });
-            }
+              body: `The following issues were detected:\n\n${parse_output}`
+            })
+          token: ${{ secrets.GITHUB_TOKEN }}

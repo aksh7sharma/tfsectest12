@@ -24,6 +24,17 @@ jobs:
       - name: output
         run: cat results.json
       - name: parse output
+        id: parse_output
         run: jq -r '.results[] | "The issue *\(.rule_description)* was detected in the file *\(.location.filename)* between the lines \(.location.start_line) and \(.location.end_line)"' results.json
-
-
+      - name: Post PR Comment
+        uses: actions/github-script@v4
+        with:
+          github-token: ${{ github.token }}
+          script: |
+            const output = '${{ steps.parse_output.outputs.stdout }}';
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });

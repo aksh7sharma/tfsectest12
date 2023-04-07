@@ -4,6 +4,7 @@ on:
     branches:
       - main
   pull_request:
+
 jobs:
   tfsec:
     name: tfsec
@@ -12,7 +13,8 @@ jobs:
     steps:
       - name: Clone repo
         uses: actions/checkout@master
-      - name: tfsec
+
+      - name: Run tfsec
         id: run_sectest
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
@@ -21,20 +23,37 @@ jobs:
           additional_args: --out results.json
         env:
           ACTIONS_STEP_DEBUG: true
-      - name: output
-        run: cat results.json
-      - name: parse output
+
+      - name: Parse output
         id: parse_output
         run: jq -r '.results[] | "The issue *\(.rule_description)* was detected in the file *\(.location.filename)* between the lines \(.location.start_line) and \(.location.end_line)"' results.json
-      - name: Post PR Comment
+
+      - name: Comment PR with tfsec results
         uses: actions/github-script@v4
         with:
           github-token: ${{ github.token }}
           script: |
-            const output = '${{ steps.parse_output.outputs.stdout }}';
-            github.issues.createComment({
-              issue_number: context.issue.number,
+            const output = `TFSec results:\n\n${steps.parse_output.outputs.parsed_output}`;
+            const context = github.context;
+            const octokit = new github.getOctokit('${{ github.token }}');
+            const { data: comments } = await octokit.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: output
+              issue_number: context.issue.number
             });
+            const comment = comments.find(comment => comment.user.login === 'github-actions[bot]' && comment.body.startsWith('TFSec results:'));
+            if (comment) {
+              await octokit.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: comment.id,
+                body: output
+              });
+            } else {
+              await octokit.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: output
+              });
+            }

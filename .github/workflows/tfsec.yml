@@ -29,9 +29,8 @@ jobs:
 
       - name: parse output
         id: parse_output
-        run: |
-          echo ::set-output name=parse_output::$(jq -r '.results[] | "The issue *\(.rule_description)* was detected in the file *\(.location.filename)* between the lines \(.location.start_line) and \(.location.end_line)"' results.json)
-
+        run: jq -r '.results[] | "The issue *\(.rule_description)* was detected in the file *\(.location.filename)* between the lines \(.location.start_line) and \(.location.end_line)"' results.json | sed 's/$/\\r/'
+        
       - name: Comment PR
         uses: actions/github-script@v4
         if: always()

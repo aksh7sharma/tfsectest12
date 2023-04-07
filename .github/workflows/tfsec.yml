@@ -24,5 +24,6 @@ jobs:
       - name: output
         run: cat results.json
       - name: parse output
-        run: jq -r '.results[] | "\(.rule_description) - Filename: \(.location.filename)"' results.json
+        run: jq -r '.results[] | "\(.rule_description) - Filename is \(.location.filename)"' results.json
+
 

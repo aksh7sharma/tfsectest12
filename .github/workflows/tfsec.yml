@@ -30,7 +30,8 @@ jobs:
       - name: parse output
         id: parse_output
         run: |
-          echo ::set-output name=parse_output::$(jq -r '.results[] | "The issue *\(.rule_description)* was detected in the file *\(.location.filename)* between the lines \(.location.start_line) and \(.location.end_line)\n\n\n"' results.json)
+          jq -r '.results[] | "The issue \(.rule_description) was detected in the file \(.location.filename) between the lines \(.location.start_line) and \(.location.end_line)" | @text' results.json > parsed_output.txt
+          echo "::set-output name=parse_output::$(cat parsed_output.txt)"
 
       - name: Comment PR
         uses: actions/github-script@v4

@@ -23,3 +23,5 @@ jobs:
           ACTIONS_STEP_DEBUG: true
       - name: output
         run: cat results.json
+      - name: parse output
+        run: jq .results.rule_description results.json

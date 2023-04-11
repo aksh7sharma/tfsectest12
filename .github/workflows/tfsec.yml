@@ -30,9 +30,7 @@ jobs:
       - name: parse output
         id: parse_output
         run: |
-          echo "The following security issues were detected in the terraform file(s):"
-          jq -r '.results[] | "\(input_line_number). The issue ^^ \(.rule_description) ^^ was detected in the file ^^ \(.location.filename) ^^ between the lines <u>\(.location.start_line)</u> and <u>\(.location.end_line)</u><br><br>"' results.json
-        shell: bash
+          echo ::set-output name=parse_output::$(jq -r '.results[] | "\(input_line_number). The issue ^^ \(.rule_description) ^^ was detected in the file ^^ \(.location.filename) ^^ between the lines <u>\(.location.start_line)</u> and <u>\(.location.end_line)</u><br><br>"' results.json | nl)
 
       - name: Comment PR
         uses: actions/github-script@v4

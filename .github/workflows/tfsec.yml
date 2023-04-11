@@ -30,7 +30,7 @@ jobs:
       - name: parse output
         id: parse_output
         run: |
-          echo ::set-output name=parse_output::$(jq -r '.results[] | "\(input_line_number). The issue ^^ \(.rule_description) ^^ was detected in the file ^^ \(.location.filename) ^^ between the lines <u>\(.location.start_line)</u> and <u>\(.location.end_line)</u><br><br>"' results.json | nl)
+          echo ::set-output name=parse_output::$(jq -r '.results[] | "\(input_line_number). The issue ^^ \(.rule_description) ^^ was detected in the file ^^ \(.location.filename) ^^ between the lines <u>\(.location.start_line)</u> and <u>\(.location.end_line)</u><br><br>"' results.json | nl | sed 's/^[ \t]*[0-9]*\t//')
 
       - name: Comment PR
         uses: actions/github-script@v4

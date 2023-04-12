@@ -17,17 +17,18 @@ jobs:
       - name: tfsec for critical/high risk issues
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
-          additional_args: --sort-severity --minimum-severity HIGH
+          additional_args: --minimum-severity HIGH
         env:
           ACTIONS_STEP_DEBUG: true
 
       - name: tfsec
         id: run_sectest
         uses: aquasecurity/tfsec-action@v1.0.0
+        if: always()
         with:
           soft_fail: true
           format: json
-          additional_args: --out results.json --sort-severity --run-statistics
+          additional_args: --out results.json --run-statistics
         env:
           ACTIONS_STEP_DEBUG: true
 

@@ -22,6 +22,10 @@ jobs:
         env:
           ACTIONS_STEP_DEBUG: true
           
+      - name: output
+        if: always()
+        run: cat summary
+          
       - name: Comment PR Summary
         uses: actions/github-script@v4
         if: always()
@@ -46,10 +50,6 @@ jobs:
           additional_args: --out results.json 
         env:
           ACTIONS_STEP_DEBUG: true
-
-      - name: output
-        if: always()
-        run: cat summary
 
       - name: parse output
         id: parse_output

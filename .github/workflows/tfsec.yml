@@ -17,7 +17,7 @@ jobs:
       - name: tfsec for critical/high risk security issues
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
-          format: lovely
+          format: markdown
           additional_args: --minimum-severity HIGH --run-statistics
         env:
           ACTIONS_STEP_DEBUG: true

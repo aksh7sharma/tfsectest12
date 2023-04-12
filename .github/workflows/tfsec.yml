@@ -28,13 +28,13 @@ jobs:
         if: always()
         with:
           script: |
-            parse_output=$(cat summary)
+            const parse_output = '${{ steps.parse_output.outputs.parse_output }}'
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: `The following security issues were detected in the terraform file(s):<br><br>${parse_output}`
-            })
+            });
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: tfsec

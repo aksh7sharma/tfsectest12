@@ -18,7 +18,6 @@ jobs:
         id: tfsec_summary
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
-          format: markdown
           additional_args: --run-statistics --out summary
         env:
           ACTIONS_STEP_DEBUG: true

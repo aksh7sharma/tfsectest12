@@ -13,6 +13,13 @@ jobs:
     steps:
       - name: Clone repo
         uses: actions/checkout@v2
+        
+      - name: tfsec for critical/high risk issues
+        uses: aquasecurity/tfsec-action@v1.0.0
+        with:
+          additional_args: --sort-severity --minimum-severity HIGH
+        env:
+          ACTIONS_STEP_DEBUG: true
 
       - name: tfsec
         id: run_sectest
@@ -20,7 +27,7 @@ jobs:
         with:
           soft_fail: true
           format: json
-          additional_args: --out results.json
+          additional_args: --out results.json --sort-severity --run-statistics
         env:
           ACTIONS_STEP_DEBUG: true
 

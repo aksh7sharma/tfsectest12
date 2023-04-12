@@ -14,7 +14,7 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@v2
         
-      - name: tfsec for critical/high risk issues
+      - name: tfsec for critical/high risk security issues
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           additional_args: --minimum-severity HIGH
@@ -28,7 +28,7 @@ jobs:
         with:
           soft_fail: true
           format: json
-          additional_args: --out results.json --run-statistics
+          additional_args: --out results.json
         env:
           ACTIONS_STEP_DEBUG: true
 
@@ -37,6 +37,7 @@ jobs:
 
       - name: parse output
         id: parse_output
+        if: always()
         run: |
           echo ::set-output name=parse_output::$(jq -r '.results[] | ". The issue ^^ \(.rule_description) ^^ was detected in the file ^^ \(.location.filename) ^^ between the lines <u>\(.location.start_line)</u> and <u>\(.location.end_line).</u><br>"' results.json | nl)
 

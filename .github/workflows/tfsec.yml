@@ -57,4 +57,5 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Delete Results file
+        if: always()
         run: rm -f results.json

@@ -28,7 +28,7 @@ jobs:
         if: always()
         with:
           script: |
-            const parse_output = '${{ steps.tfsec_summary.outputs.tfsec_summary }}'
+            const parse_output = '${{ steps.tfsec_summary.outputs }}'
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

@@ -27,7 +27,7 @@ jobs:
         if: always()
         with:
           soft_fail: true
-          format: json
+          format: json, default
           additional_args: --out results.json
         env:
           ACTIONS_STEP_DEBUG: true

@@ -50,7 +50,7 @@ jobs:
 
       - name: output
         if: always()
-        run: cat results.json
+        run: cat summary
 
       - name: parse output
         id: parse_output

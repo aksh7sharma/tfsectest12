@@ -19,7 +19,7 @@ jobs:
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           format: markdown
-          additional_args: --minimum-severity HIGH --run-statistics
+          additional_args: --minimum-severity HIGH --run-statistics --out summary
         env:
           ACTIONS_STEP_DEBUG: true
           
@@ -28,7 +28,7 @@ jobs:
         if: always()
         with:
           script: |
-            const parse_output = '${{ steps.tfsec_summary.outputs }}'
+            parse_output=$(cat summary)
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,

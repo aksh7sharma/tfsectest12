@@ -33,6 +33,7 @@ jobs:
           ACTIONS_STEP_DEBUG: true
 
       - name: output
+        if: always()
         run: cat results.json
 
       - name: parse output
@@ -54,3 +55,6 @@ jobs:
               body: `The following security issues were detected in the terraform file(s):<br><br>${parse_output}`
             })
           token: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Delete Results file
+        run: rm -f results.json

@@ -18,14 +18,17 @@ jobs:
         id: tfsec_summary
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
-          format: lovely
-          additional_args: --run-statistics --out summary
+          format: markdown
+          additional_args: --run-statistics
         env:
           ACTIONS_STEP_DEBUG: true
           
+      - name: Set tfsec output
+        run: echo "::set-output name=tfsec_output1::${{ steps.tfsec_summary.outputs.tfsec_output1 }}"
+          
       - name: output
         if: always()
-        run: cat summary.json
+        run: echo $(tfsec_output1)
           
       - name: Comment PR Summary
         uses: actions/github-script@v4

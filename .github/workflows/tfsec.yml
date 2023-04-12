@@ -15,12 +15,27 @@ jobs:
         uses: actions/checkout@v2
         
       - name: tfsec for critical/high risk security issues
+        id: tfsec_summary
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           format: markdown
           additional_args: --minimum-severity HIGH --run-statistics
         env:
           ACTIONS_STEP_DEBUG: true
+          
+      - name: Comment PR Summary
+        uses: actions/github-script@v4
+        if: always()
+        with:
+          script: |
+            const parse_output = '${{ steps.tfsec_summary.outputs.tfsec_summary }}'
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `The following security issues were detected in the terraform file(s):<br><br>${parse_output}`
+            })
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: tfsec
         id: run_sectest

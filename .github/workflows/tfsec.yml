@@ -18,11 +18,13 @@ jobs:
         id: tfsec_summary
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
-          format: markdown
-          additional_args: --run-statistics
+          additional_args: --run-statistics --out stats
         env:
           ACTIONS_STEP_DEBUG: true
           
+      - name: Check summary file
+        run: cat stats
+      
       - name: Set tfsec output
         id: set_tfsec_output
         run: echo "::set-output name=tfsec_output1::${{ steps.tfsec_summary.outputs.tfsec_summary }}"

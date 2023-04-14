@@ -18,12 +18,13 @@ jobs:
         id: tfsec_summary
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
-          additional_args: --run-statistics --out stats
+          format: json
+          additional_args: --run-statistics --out stats.json
         env:
           ACTIONS_STEP_DEBUG: true
           
       - name: Check summary file
-        run: cat stats
+        run: cat stats.json
       
       - name: Set tfsec output
         id: set_tfsec_output

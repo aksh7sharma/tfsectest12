@@ -24,7 +24,7 @@ jobs:
           ACTIONS_STEP_DEBUG: true
           
       - name: Set tfsec output
-        run: echo "::set-output name=tfsec_output1::${{ steps.tfsec_summary.outputs.tfsec_output1 }}"
+        run: echo "::set-output name=tfsec_output1::${{ steps.tfsec_summary.outputs.tfsec_summary }}"
           
       - name: output
         if: always()

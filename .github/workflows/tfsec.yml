@@ -54,54 +54,35 @@ jobs:
             })
           token: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Generate Summary Table
-        id: summary_table
-        if: always()
+      - name: Generate summary table
+        id: generate_table
         run: |
-          SEVERITY=$(jq -r '.results[] | select(.severity == "HIGH" or .severity == "CRITICAL") | .severity' results.json)
-          echo "Severity | Rule Description | Resource"
-          echo "-------- | ---------------- | --------"
-          for s in $SEVERITY; do
-            jq -r --arg s "$s" '.results[] | select(.severity == $s) | "\(.severity) | \(.rule_description) | \(.resource)"' results.json
-          done
-        env:
-          ACTIONS_STEP_DEBUG: true
-      
-      - name: Comment PR Summary Table
+          # Parse the tfsec_summary output
+          summary=$(jq -r '.results | group_by(.severity) | map({(.[0].severity): length}) | add' results.json)
+
+          # Generate the summary table
+          table=$(echo "$summary" | awk 'BEGIN {print "| Severity | Count |"} {print "|---------|-------|"} {for (key in a) {print "| " key " | " a[key] " |"}}')
+
+          # Set the table as output for the next step
+          echo "::set-output name=table::$table"
+
+        # Always execute this step
         if: always()
+
+      - name: Comment summary table
         uses: actions/github-script@v4
+        if: always()
         with:
           script: |
-            const summary_table = '${{ steps.summary_table.outputs.stdout }}'
+            const table = '${{ steps.generate_table.outputs.table }}';
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Summary Table:<br><br>${summary_table}`
-            })
-          token: ${{ secrets.GITHUB_TOKEN }}
-          
-      - name: Summary table
-        if: always()
-        run: |
-          # Parse json output from tfsec_summary step
-          output=$(cat ${{ github.workspace }}/results.json)
-          # Count issues by severity
-          critical=$(echo $output | jq '.results | map(select(.severity == "CRITICAL")) | length')
-          high=$(echo $output | jq '.results | map(select(.severity == "HIGH")) | length')
-          medium=$(echo $output | jq '.results | map(select(.severity == "MEDIUM")) | length')
-          low=$(echo $output | jq '.results | map(select(.severity == "LOW")) | length')
-          info=$(echo $output | jq '.results | map(select(.severity == "INFO")) | length')
-          # Print summary table
-          echo "## Security issues summary table"
-          echo "| Severity | Count |"
-          echo "|----------|-------|"
-          echo "| Critical | $critical |"
-          echo "| High     | $high |"
-          echo "| Medium   | $medium |"
-          echo "| Low      | $low |"
-          echo "| Info     | $info |"
-       
+              body: `Summary table of security issues detected in this pull request:<br>${table}`
+            });
+        # Uses the same "always()" condition as the previous step to always execute
+
       - name: Delete Results file
         if: always()
         run: rm -f results.json

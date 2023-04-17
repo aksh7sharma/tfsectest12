@@ -73,7 +73,7 @@ jobs:
             const fs = require('fs');
             const table = fs.readFileSync('summary_table.md', 'utf8');
             const severityCounts = fs.readFileSync('results.json', 'utf8');
-            const countsBySeverity = JSON.parse(severityCounts)
+            const countsBySeverity = [JSON.parse(severityCounts)]
               .reduce((acc, val) => {
                 acc[val.severity] = acc[val.severity] + 1 || 1;
                 return acc;
@@ -94,7 +94,6 @@ jobs:
             });
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 
       - name: Delete Results file
         if: always()

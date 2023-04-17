@@ -56,7 +56,7 @@ jobs:
           
       - name: Delete summary file
         if: always()
-        run: rm -f rsummary_table.md
+        run: rm -f summary_table.md
           
       - name: Create Summary Table
         if: always()

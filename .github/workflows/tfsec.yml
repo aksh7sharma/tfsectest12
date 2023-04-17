@@ -54,6 +54,10 @@ jobs:
             })
           token: ${{ secrets.GITHUB_TOKEN }}
           
+      - name: Delete summary file
+        if: always()
+        run: rm -f rsummary_table.md
+          
       - name: Create Summary Table
         if: always()
         id: summary_table
@@ -98,3 +102,4 @@ jobs:
       - name: Delete Results file
         if: always()
         run: rm -f results.json
+

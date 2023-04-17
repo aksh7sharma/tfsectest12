@@ -81,6 +81,25 @@ jobs:
             })
           token: ${{ secrets.GITHUB_TOKEN }}
           
+      - name: Summary table
+        if: always()
+        run: |
+          # Parse json output from tfsec_summary step
+          output=$(cat ${{ github.workspace }}/tfsec_summary.json)
+          # Count issues by severity
+          high=$(echo $output | jq '.results | map(select(.severity == "HIGH")) | length')
+          medium=$(echo $output | jq '.results | map(select(.severity == "MEDIUM")) | length')
+          low=$(echo $output | jq '.results | map(select(.severity == "LOW")) | length')
+          info=$(echo $output | jq '.results | map(select(.severity == "INFO")) | length')
+          # Print summary table
+          echo "## Security issues summary table"
+          echo "| Severity | Count |"
+          echo "|----------|-------|"
+          echo "| High     | $high |"
+          echo "| Medium   | $medium |"
+          echo "| Low      | $low |"
+          echo "| Info     | $info |"
+       
       - name: Delete Results file
         if: always()
         run: rm -f results.json

@@ -66,6 +66,7 @@ jobs:
           echo "Severity | Count" > summary_table.md
           echo "-------- | -----" >> summary_table.md
           echo "$severity_counts" | awk '{printf "%-8s | %-5d\n", $1, $2}' >> summary_table.md
+          echo "$severity_counts"
           cat summary_table.md
         shell: bash
 

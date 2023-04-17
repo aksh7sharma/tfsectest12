@@ -58,7 +58,7 @@ jobs:
         if: always()
         id: summary_table
         run: |
-          severity_counts=$(jq -r '.results | group_by(.severity) | map({severity: .[0].severity, count: length}) | sort_by(-.severity == "HIGH", -.severity == "MEDIUM", -.severity == "LOW")' results.json)
+          severity_counts=$(jq -r '.results | group_by(.severity) | map({severity: .[0].severity, count: length}) | sort_by(-.severity | tonumber)[] | [.severity, .count] | @tsv' results.json)
           echo "Severity | Count" > summary_table.md
           echo "-------- | -----" >> summary_table.md
           echo "$severity_counts" | awk '{printf "%-8s | %-5d\n", $1, $2}' >> summary_table.md
@@ -71,14 +71,29 @@ jobs:
           script: |
             const fs = require('fs');
             const table = fs.readFileSync('summary_table.md', 'utf8');
+            const severityCounts = fs.readFileSync('results.json', 'utf8');
+            const countsBySeverity = JSON.parse(severityCounts)
+              .reduce((acc, val) => {
+                acc[val.severity] = acc[val.severity] + 1 || 1;
+                return acc;
+              }, {});
+
+            const prBody = `## Summary Table\n\n${table}\n\n`;
+            const prBodyWithCounts = Object.entries(countsBySeverity)
+              .sort((a, b) => a[0].localeCompare(b[0]))
+              .reduce((acc, [severity, count]) => {
+                return `${acc}${severity}: ${count}\n`;
+              }, prBody);
+
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `## Summary Table\n\n${table}`
+              body: prBodyWithCounts
             });
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
 
       - name: Delete Results file
         if: always()

@@ -85,7 +85,7 @@ jobs:
         if: always()
         run: |
           # Parse json output from tfsec_summary step
-          output=$(cat ${{ github.workspace }}/tfsec_summary.json)
+          output=$(cat ${{ github.workspace }}/results.json)
           # Count issues by severity
           high=$(echo $output | jq '.results | map(select(.severity == "HIGH")) | length')
           medium=$(echo $output | jq '.results | map(select(.severity == "MEDIUM")) | length')

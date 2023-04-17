@@ -54,6 +54,33 @@ jobs:
             })
           token: ${{ secrets.GITHUB_TOKEN }}
           
+      - name: Generate Summary Table
+        id: summary_table
+        if: always()
+        run: |
+          SEVERITY=$(jq -r '.results[] | select(.severity == "HIGH" or .severity == "CRITICAL") | .severity' tfsec_summary.json)
+          echo "Severity | Rule Description | Resource"
+          echo "-------- | ---------------- | --------"
+          for s in $SEVERITY; do
+            jq -r --arg s "$s" '.results[] | select(.severity == $s) | "\(.severity) | \(.rule_description) | \(.resource)"' tfsec_summary.json
+          done
+        env:
+          ACTIONS_STEP_DEBUG: true
+      
+      - name: Comment PR Summary Table
+        if: always()
+        uses: actions/github-script@v4
+        with:
+          script: |
+            const summary_table = '${{ steps.summary_table.outputs.stdout }}'
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Summary Table:<br><br>${summary_table}`
+            })
+          token: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Delete Results file
         if: always()
         run: rm -f results.json

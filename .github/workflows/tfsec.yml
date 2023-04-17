@@ -65,7 +65,7 @@ jobs:
           severity_counts=`jq -r '.results | group_by(.severity) | map({severity: .[0].severity, count: length, order: {"HIGH": 3, "MEDIUM": 2, "LOW": 1}[.[0].severity]}) | sort_by(-.order)' results.json`
           echo "Severity | Count" > summary_table.md
           echo "-------- | -----" >> summary_table.md
-          echo "$severity_counts" | awk '{printf "%-8s | %-5d\n", $1, $2}' >> summary_table.md
+          echo "$severity_counts" | awk -F'"' '/severity/ {printf "%s\t%s\n", $4, $(NF-1)}' >> summary_table.md
           echo "$severity_counts"
           cat summary_table.md
         shell: bash

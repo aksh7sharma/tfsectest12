@@ -54,34 +54,31 @@ jobs:
             })
           token: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Generate summary table
-        id: generate_table
+      - name: Create Summary Table
+        if: always()
+        id: summary_table
         run: |
-          # Parse the tfsec_summary output
-          summary=$(jq -r '.results | group_by(.severity) | map({(.[0].severity): length}) | add' results.json)
+          severity_counts=$(jq -r '.results | group_by(.severity) | map({severity: .[0].severity, count: length}) | sort_by(-.severity == "HIGH", -.severity == "MEDIUM", -.severity == "LOW")' results.json)
+          echo "Severity | Count" > summary_table.md
+          echo "-------- | -----" >> summary_table.md
+          echo "$severity_counts" | awk '{printf "%-8s | %-5d\n", $1, $2}' >> summary_table.md
+        shell: bash
 
-          # Generate the summary table
-          table=$(echo "$summary" | awk 'BEGIN {print "| Severity | Count |"} {print "|---------|-------|"} {for (key in a) {print "| " key " | " a[key] " |"}}')
-
-          # Set the table as output for the next step
-          echo "::set-output name=table::$table"
-
-        # Always execute this step
+      - name: Comment PR with Summary Table
         if: always()
-
-      - name: Comment summary table
         uses: actions/github-script@v4
-        if: always()
         with:
           script: |
-            const table = '${{ steps.generate_table.outputs.table }}';
+            const fs = require('fs');
+            const table = fs.readFileSync('summary_table.md', 'utf8');
             github.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `Summary table of security issues detected in this pull request:<br>${table}`
+              body: `## Summary Table\n\n${table}`
             });
-        # Uses the same "always()" condition as the previous step to always execute
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Delete Results file
         if: always()

@@ -58,12 +58,11 @@ jobs:
         if: always()
         id: summary_table
         run: |
-          severity_counts=$(jq -r '.results | group_by(.severity) | map({severity: .[0].severity, count: length, order: {"HIGH": 3, "MEDIUM": 2, "LOW": 1}[.[0].severity]}) | sort_by(-.order) | map({severity: .severity, count: .count})' results.json)
+          severity_counts=$(jq -r '.results | group_by(.severity) | map({severity: .[0].severity, count: length, order: {"HIGH": 3, "MEDIUM": 2, "LOW": 1}[.[0].severity]}) | sort_by(-.order)' results.json)
           echo "Severity | Count" > summary_table.md
           echo "-------- | -----" >> summary_table.md
           echo "$severity_counts" | awk '{printf "%-8s | %-5d\n", $1, $2}' >> summary_table.md
         shell: bash
-
 
       - name: Comment PR with Summary Table
         if: always()
@@ -73,9 +72,9 @@ jobs:
             const fs = require('fs');
             const table = fs.readFileSync('summary_table.md', 'utf8');
             const severityCounts = fs.readFileSync('results.json', 'utf8');
-            const countsBySeverity = JSON.parse(severityCounts)
+            const countsBySeverity = [JSON.parse(severityCounts)]
               .reduce((acc, val) => {
-                acc[val.severity] = val.count;
+                acc[val.severity] = acc[val.severity] + 1 || 1;
                 return acc;
               }, {});
 

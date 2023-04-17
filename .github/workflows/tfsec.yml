@@ -19,34 +19,9 @@ jobs:
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           format: json
-          additional_args: --run-statistics --out stats.json
+          additional_args: --minimum-severity HIGH
         env:
           ACTIONS_STEP_DEBUG: true
-          
-      - name: Check summary file
-        run: cat stats.json
-      
-      - name: Set tfsec output
-        id: set_tfsec_output
-        run: echo "::set-output name=tfsec_output1::${{ steps.tfsec_summary.outputs.tfsec_summary }}"
-          
-      - name: output
-        if: always()
-        run: echo "The tfsec output is -- ${{ steps.set_tfsec_output.outputs.tfsec_output1 }}"
-          
-      - name: Comment PR Summary
-        uses: actions/github-script@v4
-        if: always()
-        with:
-          script: |
-            const parse_output = '${{ steps.tfsec_summary.outputs.tfsec_output1 }}'
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `The following security issues were detected in the terraform file(s):<br><br>${parse_output}`
-            });
-          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: tfsec
         id: run_sectest

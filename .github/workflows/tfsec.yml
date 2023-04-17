@@ -87,6 +87,7 @@ jobs:
           # Parse json output from tfsec_summary step
           output=$(cat ${{ github.workspace }}/results.json)
           # Count issues by severity
+          critical=$(echo $output | jq '.results | map(select(.severity == "CRITICAL")) | length')
           high=$(echo $output | jq '.results | map(select(.severity == "HIGH")) | length')
           medium=$(echo $output | jq '.results | map(select(.severity == "MEDIUM")) | length')
           low=$(echo $output | jq '.results | map(select(.severity == "LOW")) | length')
@@ -95,6 +96,7 @@ jobs:
           echo "## Security issues summary table"
           echo "| Severity | Count |"
           echo "|----------|-------|"
+          echo "| Critical | $critical |"
           echo "| High     | $high |"
           echo "| Medium   | $medium |"
           echo "| Low      | $low |"

@@ -33,25 +33,25 @@ jobs:
         env:
           ACTIONS_STEP_DEBUG: true
 
-      - name: parse output
-        id: parse_output
-        if: always()
-        run: |
-          echo ::set-output name=parse_output::$(jq -r '.results[] | ". The issue ^^ \(.rule_description) ^^ was detected in the file ^^ \(.location.filename) ^^ between the lines <u>\(.location.start_line)</u> and <u>\(.location.end_line).</u><br>"' results.json | nl)
+#       - name: parse output
+#         id: parse_output
+#         if: always()
+#         run: |
+#           echo ::set-output name=parse_output::$(jq -r '.results[] | ". The issue ^^ \(.rule_description) ^^ was detected in the file ^^ \(.location.filename) ^^ between the lines <u>\(.location.start_line)</u> and <u>\(.location.end_line).</u><br>"' results.json | nl)
 
-      - name: Comment PR
-        uses: actions/github-script@v4
-        if: always()
-        with:
-          script: |
-            const parse_output = '${{ steps.parse_output.outputs.parse_output }}'
-            github.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: `The following security issues were detected in the terraform file(s):<br><br>${parse_output}`
-            })
-          token: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Comment PR
+#         uses: actions/github-script@v4
+#         if: always()
+#         with:
+#           script: |
+#             const parse_output = '${{ steps.parse_output.outputs.parse_output }}'
+#             github.issues.createComment({
+#               issue_number: context.issue.number,
+#               owner: context.repo.owner,
+#               repo: context.repo.repo,
+#               body: `The following security issues were detected in the terraform file(s):<br><br>${parse_output}`
+#             })
+#           token: ${{ secrets.GITHUB_TOKEN }}
           
       - name: Delete summary file
         if: always()
@@ -83,7 +83,7 @@ jobs:
                 return acc;
               }, {});
 
-            const prBody = `## Summary Table\n\n${table}\n\n`;
+            const prBody = `## Summary of Security Issues\n\n${table}\n\n`;
             const prBodyWithCounts = Object.entries(countsBySeverity)
               .sort((a, b) => a[0].localeCompare(b[0]))
               .reduce((acc, [severity, count]) => {

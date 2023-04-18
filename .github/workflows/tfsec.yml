@@ -14,11 +14,10 @@ jobs:
       - name: Clone repo
         uses: actions/checkout@v2
         
-      - name: tfsec for critical/high risk security issues
+      - name: Critical/high risk security issues in TF files
         id: tfsec_summary
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
-          format: json
           additional_args: --minimum-severity HIGH
         env:
           ACTIONS_STEP_DEBUG: true

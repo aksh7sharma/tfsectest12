@@ -21,6 +21,22 @@ jobs:
           additional_args: --minimum-severity HIGH
         env:
           ACTIONS_STEP_DEBUG: true
+          
+      - name: Post comment if tfsec_summary fails
+        if: ${{ failure() }}
+        uses: actions/github-script@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          script: |
+            const outputUrl = process.env.GITHUB_SERVER_URL + '/' + process.env.GITHUB_REPOSITORY + '/actions/runs/' + process.env.GITHUB_RUN_ID;
+            const issueComment = `The build has failed because at least one Critical or High risk issue was detected in some Terraform file. See [tfsec_summary](${outputUrl}) for more details.`;
+            github.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: issueComment
+            });
 
       - name: tfsec
         id: run_sectest

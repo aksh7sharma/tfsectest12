@@ -48,6 +48,10 @@ jobs:
           additional_args: --out results.json 
         env:
           ACTIONS_STEP_DEBUG: true
+          
+      - name: Display results file
+        if: always()
+        run: cat results.json
 
 #       - name: parse output
 #         id: parse_output
